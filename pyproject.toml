@@ -1,0 +1,26 @@
+[project]
+name = "croupier"
+version = "0.1.0"
+description = "A blackjack game and stats simulator"
+authors = [
+    {name = "Ángel Ramírez"}
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas (>=3.0.5,<4.0.0)",
+    "pygame-ce (>=2.5.8,<3.0.0)",
+    "streamlit (>=1.62.0,<2.0.0)",
+    "plotly (>=7.0.0,<8.0.0)"
+]
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.1.1,<10.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
