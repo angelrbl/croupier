@@ -1,8 +1,9 @@
-from .models import Card, Rank, Suit, Deck
+from .models import Card, Rank, Suit, Deck, Hand
 
 __all__ = [
     "Card",
     "Rank",
     "Suit",
-    "Deck"
+    "Deck",
+    "Hand"
 ]

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 import random
 
-from .card import Card, Rank, Suit
+from croupier.models.card import Card, Rank, Suit
 
 @dataclass
 class Deck:

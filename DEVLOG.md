@@ -1,32 +1,30 @@
-# DevLog
+# Croupier - Development Log
 
-## 2026-08-30 | Initial setup & scaffolding
+## [2026-08-30] - Initial Setup & Scaffolding
 
-**Done:**
+**Done**
 - Initialized project using Poetry (`pyproject.toml`).
-- Defined stack: `pygame-ce` (UI), `pandas` + `streamlit` + `plotly` (simulation & dashboard).
-- Created `src/` layout to isolate logic, UI, and simulation.
-- Placed core data structures (`Card`, `Deck`, `Hand`) inside `src/croupier/models/`.
+- Created `src/` layout to isolate domain logic (`models/`), UI, and simulation.
+- Set up base architecture for `croupier` Python package.
 
-**Decisions:**
-- Stripped down casino rules: no money, betting, splits, or surrender. The focus is strictly on hit/stand mechanics and dealer thresholds for statistical analysis.
+**Architecture & Decisions**
+- **Tech Stack:** `pygame-ce` for UI, `pandas` + `streamlit` + `plotly` for simulation and data visualization.
+- **Scope Reduction:** Stripped down casino rules to pure probability. Removed money, betting, splits, and surrender to focus strictly on hit/stand mechanics and dealer thresholds.
 
-**Next up:**
-- Implement `Card`, `Deck`, and `Hand` classes in `models/`.
+---
 
-## 2026-08-31 | Core Models Implementation & Testing
+## [2026-08-31] - Core Domain, Hand Logic & Test Suite
 
-**Done:**
+**Done**
+- Implemented `Card` using `dataclass` and `Enum`.
+- Implemented `Deck` with automatic 52-card generation, shuffling, drawing, and cloning mechanics.
+- Implemented `Hand` with dynamic score calculation, tracking `is_bust` and `is_blackjack`.
+- Created comprehensive `pytest` suite (`test_card.py`, `test_deck.py`, `test_hand.py`) verifying edge cases like multiple Aces, soft/hard hands, and busts.
 
-- Implemented `Card` class using `dataclass` and `Enum`.
-- Implemented `Deck` class with automatic 52-card generation, shuffling, and drawing mechanics.
-- Set up and structured the testing suite (`test_card.py` y `test_deck.py`) using `pytest`.
+**Architecture & Decisions**
+- **Dynamic Scoring:** Avoided storing static values. Used `@property` to calculate Blackjack scores dynamically (Face cards = 10, Ace = 11).
+- **Decoupling:** Removed `Deck` dependency from `Hand`. The game orchestrator will handle drawing and passing cards via `Hand.add_card()`.
+- **Blackjack Strictness:** Defined `is_blackjack` strictly as a 21-point hand composed of exactly two cards.
 
-**Decisions:**
-
-- **Card Logic:** Avoided storing a static `_value` attribute. Instead, used a `@property` to dynamically calculate the Blackjack score based on the rank (handling face cards as 10 and Aces as 11).
-
-**Next up:**
-
-- Implement the `Hand` class, focusing heavily on the logic to calculate total score and manage the dual-value nature of the Ace (1 vs 11).
-- Write and execute unit tests for `Hand`.
+**Next Steps**
+- Design the `Game` class in `core/game.py` to orchestrate turns, player decisions (Hit/Stand), and configurable dealer rules (e.g., stand on 17).
