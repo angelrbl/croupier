@@ -30,8 +30,6 @@
 
 ## 2026-09-01 | Game Orchestrator & State Machine Implementation
 
-## 2026-09-01 | Game Orchestrator & Test Suite Complete
-
 **Done:**
 - Implemented the `Game` orchestrator class in `src/croupier/core/game.py`.
 - Defined game lifecycle states using `GameState` and outcomes using `Result`.
