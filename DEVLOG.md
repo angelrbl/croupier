@@ -26,5 +26,22 @@
 - **Decoupling:** Removed `Deck` dependency from `Hand`. The game orchestrator will handle drawing and passing cards via `Hand.add_card()`.
 - **Blackjack Strictness:** Defined `is_blackjack` strictly as a 21-point hand composed of exactly two cards.
 
-**Next Steps**
-- Design the `Game` class in `core/game.py` to orchestrate turns, player decisions (Hit/Stand), and configurable dealer rules (e.g., stand on 17).
+---
+
+## 2026-09-01 | Game Orchestrator & State Machine Implementation
+
+## 2026-09-01 | Game Orchestrator & Test Suite Complete
+
+**Done:**
+- Implemented the `Game` orchestrator class in `src/croupier/core/game.py`.
+- Defined game lifecycle states using `GameState` and outcomes using `Result`.
+- Configured dealer automation rule (`dealer_stand_threshold`).
+- Implemented core actions: `start()`, `hit()`, and `stand()`.
+- Created and executed the complete unit test suite in `tests/test_game.py`, covering initial deals, player and dealer busts and dealer automation thresholds.
+
+**Decisions:**
+- **Decoupled Game Loop:** Maintained `Game` as a passive state machine to seamlessly support both interactive UIs and statistical simulators.
+- **Rule Hierarchy:** Prioritized bust evaluations in the referee logic to correctly attribute wins and losses when a participant busts.
+
+**Next up:**
+- Decide between building out the statistical simulation script (utilizing Pandas for strategy evaluation) or bootstrapping the `pygame-ce` user interface.
