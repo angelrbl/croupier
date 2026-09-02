@@ -7,9 +7,9 @@ class GameState(Enum):
     GAME_ENDED = 2
 
 class Result(Enum):
-    WIN = 0
-    LOSS = 1
-    DRAW = 2
+    WIN = 'win'
+    LOSS = 'loss'
+    DRAW = 'draw'
 
 class Game:
     def __init__(self, dealer_stand_threshold: int = 17) -> None:
@@ -26,6 +26,10 @@ class Game:
         if len(self.dealer_hand) > 0:
             return self.dealer_hand.cards[0]
         return None
+
+    @property
+    def player_score(self) -> int:
+        return self.player_hand.value
 
     @property
     def result(self) -> Result | None:

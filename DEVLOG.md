@@ -41,5 +41,21 @@
 - **Decoupled Game Loop:** Maintained `Game` as a passive state machine to seamlessly support both interactive UIs and statistical simulators.
 - **Rule Hierarchy:** Prioritized bust evaluations in the referee logic to correctly attribute wins and losses when a participant busts.
 
-**Next up:**
-- Decide between building out the statistical simulation script (utilizing Pandas for strategy evaluation) or bootstrapping the `pygame-ce` user interface.
+---
+
+## [2026-09-02] - Strategy Pattern & Simulation Runner
+
+**Done**
+- Designed abstract base class `Strategy` and `Action` Enum in `src/croupier/strats/base.py`.
+- Implemented `BasicStrategy` concrete class (threshold-based decision logic at 17).
+- Built high-throughput simulation runner `run_simulation()` in `src/croupier/simulation/runner.py` returning structured `pandas.DataFrame` records.
+- Added `player_score` property helper to `Game` domain orchestrator.
+- Created unit tests verifying strategy decisions, runner output integrity, and DataFrame column schemas in `tests/test_simulation.py`.
+
+**Architecture & Decisions**
+- **Inversion of Control:** Injected `Strategy` instances directly into `run_simulation()`, allowing seamless benchmarking of alternative tactics without modifying simulation code.
+- **Callable Strategy Interface:** Implemented `__call__` on `Strategy` base class to allow strategy instances to act as functions or class objects interchangeably (e.g., `action = strategy(hand, upcard)`).
+
+**Next up**
+- Create CLI/script entry point (`scripts/run_sim.py`) to execute batch simulations and export results to `.csv`.
+- Begin exploratory data analysis (EDA) using `pandas` and `plotly`.
