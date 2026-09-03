@@ -7,3 +7,5 @@ build/
 .vscode/
 # SIMULATION DATA
 data/
+# JUPYTER NOTEBOOKS
+.ipynb_checkpoints/
