@@ -56,6 +56,22 @@
 - **Inversion of Control:** Injected `Strategy` instances directly into `run_simulation()`, allowing seamless benchmarking of alternative tactics without modifying simulation code.
 - **Callable Strategy Interface:** Implemented `__call__` on `Strategy` base class to allow strategy instances to act as functions or class objects interchangeably (e.g., `action = strategy(hand, upcard)`).
 
+---
+
+## [2026-09-03] - Batch Simulation CLI & EDA Setup
+
+**Done**
+- Built CLI entry point in `scripts/run_sim.py` using `click` for batch simulation execution.
+- Executed a 500,000-iteration benchmark using `BasicStrategy` and exported dataset to `data/simulation_results.csv`.
+- Installed EDA stack (`jupyter`, `plotly`, `nbformat`) and initialized exploratory notebook `notebooks/01_basic_strategy_eda.ipynb`.
+- Configured `.gitattributes` to mark `.ipynb` files as documentation, preventing repository language distribution distortion on GitHub.
+
+**Architecture & Decisions**
+- **CLI Framework:** Adopted `click` over `argparse` for improved ergonomics, explicit type casting (`click.Path`, `int`), and extensible option flag configuration.
+- **Data Persistence:** Standardized CSV exports using flat primitives (extracting string representation of `Result` Enum) for seamless `pandas` consumption.
+- **Repository Hygiene:** Excluded Jupyter cell outputs and checkpoint directories via `.gitignore` and `.gitattributes` to maintain clean Version Control diffs.
+
 **Next up**
-- Create CLI/script entry point (`scripts/run_sim.py`) to execute batch simulations and export results to `.csv`.
-- Begin exploratory data analysis (EDA) using `pandas` and `plotly`.
+- Execute exploratory data analysis in `01_basic_strategy_eda.ipynb`.
+- Generate Win/Loss/Draw bar plots and decision matrix heatmaps using Plotly Express.
+- Identify strategic flaws in `BasicStrategy` to design an adaptive strategy.
