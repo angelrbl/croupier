@@ -5,13 +5,13 @@ import plotly.express as px
 from croupier.strats import BasicStrategy, Strategy
 from croupier.simulation import run_simulation
 
-STRATEGY_OPTIONS = {
-    BasicStrategy: "Basic (stop at 17)"
-}
+STRATEGY_OPTIONS = [
+    BasicStrategy,
+]
 
 st.set_page_config(page_title="Croupier", page_icon=":material/playing_cards:", layout="wide", initial_sidebar_state="expanded", menu_items=None)
 
-# DEFAULT DF
+# DEFAULT DATA
 if 'results_df' not in st.session_state:
     df = pd.read_csv('default_data/simulation_results.csv')
 
@@ -20,8 +20,11 @@ if 'results_df' not in st.session_state:
 
     st.session_state["results_df"] = df
 
+    st.session_state["iterations"] = len(df)
+    st.session_state["strategy"] = df.at[0, "strategy_name"]
+
 # RUN SIMULATION
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def load_simulation_data(iterations: int, strategy: Strategy, dealer_stand_threshold: int = 17) -> pd.DataFrame:
     df = run_simulation(
         iterations=iterations,
@@ -43,7 +46,7 @@ with st.sidebar:
         placeholder="Select an strategy",
         accept_new_options=False,
         options=STRATEGY_OPTIONS,
-        format_func=lambda x: STRATEGY_OPTIONS.get(x, "N/A")
+        format_func=lambda x: x().name
     )
 
     iterations = st.slider(
@@ -66,6 +69,9 @@ with st.sidebar:
     if st.button(label="Run simulation", width="stretch"):
         with st.spinner(text="Dealing cards..."):
             st.session_state['results_df'] = load_simulation_data(iterations=iterations, strategy=strategy, dealer_stand_threshold=dealer_stand_threshold)
+            st.session_state["iterations"] = iterations
+            st.session_state["strategy"] = strategy().name
+            st.session_state["dealer_stand_threshold"] = dealer_stand_threshold
         st.toast("Simulation completed successfully!")
         st.rerun()
 
@@ -77,9 +83,9 @@ st.subheader("Here are some of your simulation stats: ")
 # SIM INFO
 
 col_strat, col_iter, col_deal = st.columns(3)
-col_strat.metric(label="Strategy", value=STRATEGY_OPTIONS.get(strategy, 'N/A'), border=True)
-col_iter.metric(label="Iterations", value=iterations, border=True)
-col_deal.metric(label="Dealer stand threshold", value=dealer_stand_threshold, border=True)
+col_strat.metric(label="Strategy", value=st.session_state.get('strategy', 'N/A'), border=True)
+col_iter.metric(label="Iterations", value=st.session_state.get('iterations', 'N/A'), border=True)
+col_deal.metric(label="Dealer stand threshold", value=st.session_state.get('dealer_stand_threshold', 'N/A'), border=True)
 
 st.subheader("Charts:")
 
