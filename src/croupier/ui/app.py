@@ -5,9 +5,9 @@ import plotly.express as px
 from croupier.strats import BasicStrategy, Strategy
 from croupier.simulation import run_simulation
 
-STRATEGY_OPTIONS = [
-    BasicStrategy,
-]
+STRATEGY_OPTIONS = {
+    "Basic (stop at 17)": BasicStrategy
+}
 
 st.set_page_config(page_title="Croupier", page_icon=":material/playing_cards:", layout="wide", initial_sidebar_state="expanded", menu_items=None)
 
@@ -22,6 +22,23 @@ if 'results_df' not in st.session_state:
 
     st.session_state["iterations"] = len(df)
     st.session_state["strategy"] = df.at[0, "strategy_name"]
+
+# IMPORT DATA
+def import_data(file):
+    if not file:
+        return
+    
+    df = pd.read_csv(file)
+            
+    df['result'] = df['result'].astype(str).str.replace('Result.', '')
+    df['is_win'] = (df['result'] == 'win').astype(int)
+
+    st.session_state["results_df"] = df
+
+    st.session_state["iterations"] = len(df)
+    st.session_state["strategy"] = df.at[0, "strategy_name"]
+
+    st.toast("Data imported successfully!")
 
 # RUN SIMULATION
 @st.cache_data(show_spinner=False)
@@ -41,12 +58,11 @@ def load_simulation_data(iterations: int, strategy: Strategy, dealer_stand_thres
 with st.sidebar:
     st.title("Simulation Options")
 
-    strategy = st.selectbox(
+    strategy_name = st.selectbox(
         label="Strategy",
         placeholder="Select an strategy",
         accept_new_options=False,
-        options=STRATEGY_OPTIONS,
-        format_func=lambda x: x().name
+        options=list(STRATEGY_OPTIONS.keys())
     )
 
     iterations = st.slider(
@@ -66,11 +82,15 @@ with st.sidebar:
             value=17
         )
 
+        imported_data = st.file_uploader("Upload data", type="csv", on_change=lambda: import_data(st.session_state.get('imported_data', None)))
+
+    strategy = STRATEGY_OPTIONS[strategy_name]
+
     if st.button(label="Run simulation", width="stretch"):
         with st.spinner(text="Dealing cards..."):
             st.session_state['results_df'] = load_simulation_data(iterations=iterations, strategy=strategy, dealer_stand_threshold=dealer_stand_threshold)
             st.session_state["iterations"] = iterations
-            st.session_state["strategy"] = strategy().name
+            st.session_state["strategy"] = strategy_name
             st.session_state["dealer_stand_threshold"] = dealer_stand_threshold
         st.toast("Simulation completed successfully!")
         st.rerun()
