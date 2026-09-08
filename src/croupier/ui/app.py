@@ -24,7 +24,9 @@ if 'results_df' not in st.session_state:
     st.session_state["strategy"] = df.at[0, "strategy_name"]
 
 # IMPORT DATA
-def import_data(file):
+def import_data():
+    file = st.session_state.get('imported_data', None)
+
     if not file:
         return
     
@@ -82,7 +84,7 @@ with st.sidebar:
             value=17
         )
 
-        imported_data = st.file_uploader("Upload data", type="csv", on_change=lambda: import_data(st.session_state.get('imported_data', None)))
+        st.file_uploader("Upload data", key='imported_data', type="csv", on_change=import_data)
 
     strategy = STRATEGY_OPTIONS[strategy_name]
 
